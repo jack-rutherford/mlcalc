@@ -93,47 +93,62 @@ open calcAS;
      exception Unimplemented; 
   
      fun codegen(add'(t1,t2),outFile,bindings,offset,depth) = 
-         let val _ = codegen(t1,outFile,bindings,offset,depth)
-             val _ = codegen(t2,outFile,bindings,offset,depth)
-             val reg2 = popReg()
-             val reg1 = popReg()    
-         in
-           TextIO.output(outFile,reg1 ^ ":="^reg1^"+"^reg2^"\n");
-           delReg(reg2);
-           pushReg(reg1)
-         end
+        let val _ = codegen(t1,outFile,bindings,offset,depth)
+            val _ = codegen(t2,outFile,bindings,offset,depth)
+            val reg2 = popReg()
+            val reg1 = popReg()    
+        in
+          TextIO.output(outFile,reg1 ^ ":="^reg1^"+"^reg2^"\n");
+          delReg(reg2);
+          pushReg(reg1)
+        end
             
-       | codegen(sub'(t1,t2),outFile,bindings,offset,depth) = 
-         let val _ = codegen(t1,outFile,bindings,offset,depth)
-             val _ = codegen(t2,outFile,bindings,offset,depth)
-             val reg2 = popReg()
-             val reg1 = popReg()                
-         in
-           TextIO.output(outFile,reg1 ^ ":="^reg1^"-"^reg2^"\n");
-           delReg(reg2);
-           pushReg(reg1)
-         end
-
-       | codegen(prod'(t1,t2),outFile,bindings,offset,depth) = 
-         let val _ = codegen(t1,outFile,bindings,offset,depth)
-             val _ = codegen(t2,outFile,bindings,offset,depth)
-             val reg2 = popReg()
-             val reg1 = popReg()                
-         in
-           TextIO.output(outFile,reg1 ^ ":="^reg1^"*"^reg2^"\n");
-           delReg(reg2);
-           pushReg(reg1)
-         end
-
-        | codegen(div'(t1,t2),outFile,bindings,offset,depth) =
+        | codegen(sub'(t1,t2),outFile,bindings,offset,depth) = 
           let val _ = codegen(t1,outFile,bindings,offset,depth)
               val _ = codegen(t2,outFile,bindings,offset,depth)
               val reg2 = popReg()
               val reg1 = popReg()                
           in
-            TextIO.output(outFile,reg1 ^ ":="^reg1^"/"^reg2^"\n");
+            TextIO.output(outFile,reg1 ^ ":="^reg1^"-"^reg2^"\n");
             delReg(reg2);
             pushReg(reg1)
+          end
+
+        | codegen(prod'(t1,t2),outFile,bindings,offset,depth) = 
+          let val _ = codegen(t1,outFile,bindings,offset,depth)
+              val _ = codegen(t2,outFile,bindings,offset,depth)
+              val reg2 = popReg()
+              val reg1 = popReg()                
+          in
+            TextIO.output(outFile,reg1 ^ ":="^reg1^"*"^reg2^"\n");
+            delReg(reg2);
+            pushReg(reg1)
+          end
+
+        | codegen(div'(t1,t2),outFile,bindings,offset,depth) =
+            let val _ = codegen(t1,outFile,bindings,offset,depth)
+                val _ = codegen(t2,outFile,bindings,offset,depth)
+                val reg2 = popReg()
+                val reg1 = popReg()                
+            in
+              TextIO.output(outFile,reg1 ^ ":="^reg1^"/"^reg2^"\n");
+              delReg(reg2);
+              pushReg(reg1)
+            end
+
+        | codegen(negate'(t),outFile,bindings,offset,depth) = 
+          let val _ = codegen(t,outFile,bindings,offset,depth)
+              val reg1 = popReg()                
+          in
+            TextIO.output(outFile,reg1 ^ ":=-"^reg1^"\n");
+            pushReg(reg1)
+          end
+  
+        | codegen(integer'(i),outFile,bindings,offset,depth) = 
+          let val r = getReg()
+          in
+            TextIO.output(outFile, r ^ ":=" ^ Int.toString(i) ^ "\n");
+            pushReg(r)
           end
 
         | codegen(store'(t),outFile,bindings,offset,depth) = 
@@ -145,23 +160,15 @@ open calcAS;
             end
 
         | codegen(recall',outFile,bindings,offset,depth) = 
-            let val r = getReg()
-            in
-                TextIO.output(outFile,r^":=MEM\n");
-                pushReg(r)
-            end
- 
-       | codegen(integer'(i),outFile,bindings,offset,depth) = 
-         let val r = getReg()
-         in
-           TextIO.output(outFile, r ^ ":=" ^ Int.toString(i) ^ "\n");
-           pushReg(r)
-         end
-         
-
-   | codegen(_,outFile,bindings,offset,depth) =
-         (TextIO.output(TextIO.stdOut, "Attempt to compile expression not currently supported!\n");
-          raise Unimplemented) 
+              let val r = getReg()
+              in
+                  TextIO.output(outFile,r^":=MEM\n");
+                  pushReg(r)
+              end
+          
+        (* | codegen(_,outFile,bindings,offset,depth) =
+                (TextIO.output(TextIO.stdOut, "Attempt to compile expression not currently supported!\n");
+                  raise Unimplemented)  *)
                 
                                     
      fun compile filename  = 
