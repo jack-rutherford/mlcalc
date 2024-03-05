@@ -138,9 +138,12 @@ open calcAS;
 
         | codegen(negate'(t),outFile,bindings,offset,depth) = 
           let val _ = codegen(t,outFile,bindings,offset,depth)
-              val reg1 = popReg()                
+              val reg1 = popReg()
+              val reg2 = getReg()
           in
-            TextIO.output(outFile,reg1 ^ ":=-"^reg1^"\n");
+            TextIO.output(outFile,reg2 ^ ":= 0\n");
+            TextIO.output(outFile,reg1 ^ ":="^reg2 ^ "-" ^ reg1^"\n");
+            delReg(reg2);
             pushReg(reg1)
           end
   

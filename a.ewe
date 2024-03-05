@@ -13,11 +13,8 @@ cr := 13
 nl := 10
 nullchar:=0
 R0:=5
-MEM:=R0
-R1:=4
-R0:=R0+R1
-R2:=MEM
-R0:=R0*R2
+R1:= 0
+R0:=R1-R0
 writeInt(R0)
 halt
 
@@ -47,4 +44,3 @@ equ nl M[15]
 equ nullchar M[16]
 equ R0 M[0]
 equ R1 M[1]
-equ R2 M[1]
