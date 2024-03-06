@@ -35,6 +35,7 @@ ws=[\ \t];
     in
       if      tok="s" then Tokens.Store(!pos,!pos)
       else if tok="r" then Tokens.Recall(!pos,!pos)
+      else if tok="get" then Tokens.Get(!pos,!pos)
       else (error ("error: bad token "^yytext); lex()) 
     end);
 .  => (error ("error: bad token "^yytext); lex());

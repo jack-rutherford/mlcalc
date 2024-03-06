@@ -13,8 +13,8 @@ cr := 13
 nl := 10
 nullchar:=0
 R0:=5
-R1:= 0
-R0:=R1-R0
+readInt(R1)
+R0:=R0+R1
 writeInt(R0)
 halt
 

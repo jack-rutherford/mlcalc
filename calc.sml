@@ -168,16 +168,25 @@ open calcAS;
                   TextIO.output(outFile,r^":=MEM\n");
                   pushReg(r)
               end
+
+        | codegen(get',outFile,bindings,offset,depth) = 
+          let val r = getReg()
+          in
+            TextIO.output(outFile, "readInt("^r^")\n");
+            pushReg(r)
+          end
           
         (* | codegen(_,outFile,bindings,offset,depth) =
                 (TextIO.output(TextIO.stdOut, "Attempt to compile expression not currently supported!\n");
                   raise Unimplemented)  *)
                 
                                     
-     fun compile filename  = 
+     fun compile filename  =
          let val (ast, _) = calcparse filename
              val outFile = TextIO.openOut("a.ewe")
          in
+           TextIO.output(TextIO.stdOut, show(ast));
+           TextIO.output(TextIO.stdOut, "\n");
            TextIO.output(outFile,"SP:=100\n");
            TextIO.output(outFile,"PR0 := 0\n");
            TextIO.output(outFile,"PR1 := 0\n");
