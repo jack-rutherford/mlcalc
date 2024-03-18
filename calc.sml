@@ -176,30 +176,27 @@ open calcAS;
             pushReg(r)
           end
 
-        (* Fix later *)
-        | codegen(valref',outFile,bindings,offset,depth) = 
-          let val r = getReg()
+        | codegen(letval'(id, expr1, expr2), outFile, bindings, offset, depth) = 
+          let val curOffset = Int.toString(offset)
+              val _ = codegen(expr1, outFile, bindings, offset, depth)
+              val r = popReg()
           in
-            TextIO.output(outFile, "writeInt("^r^")\n");
-            delReg(r)
+            TextIO.output(outFile, "M[SP+"^curOffset^"]:="^r^"\n");
+            delReg(r);
+            codegen(expr2, outFile, ((constant'(""^id^""), curOffset, 0)::bindings), (offset+1), depth)
+          end
+
+        | codegen(valref'(id), outFile, bindings, offset, depth) = 
+          let val curOffset = boundTo(constant'(""^id^""), bindings)
+              val r = getReg()
+          in
+            TextIO.output(outFile, r^":=M[SP+"^curOffset^"]\n");
+            pushReg(r)
           end
           
-        (* Check later *)
-        | codegen(letval'(name,expr,body),outFile,bindings,offset,depth) = 
-            let val r = getReg()
-                val _ = codegen(expr,outFile,bindings,offset,depth)
-                val reg1 = popReg()
-                val offset' = offset + 4
-                val depth' = depth + 1
-            in
-                TextIO.output(outFile,"M[SP]:="^reg1^"\n");
-                TextIO.output(outFile,"SP:=SP-4\n");
-                codegen(body,outFile,((name,offset',depth')::bindings),offset',depth')
-            end
-          
-        | codegen(_,outFile,bindings,offset,depth) =
+        (* | codegen(_,outFile,bindings,offset,depth) =
                 (TextIO.output(TextIO.stdOut, "Attempt to compile expression not currently supported!\n");
-                  raise Unimplemented) 
+                  raise Unimplemented)  *)
                 
                                     
      fun compile filename  =
