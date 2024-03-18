@@ -10,9 +10,13 @@ datatype
         | integer' of int
         | store' of AST
         | recall'
-        | get';
+        | get'
+        | letval' of string * AST * AST
+        | valref' of string;
 	   
-fun show(get') = "get" 
+fun show(valref'(id)) = "valref("^id^")"
+  | show(letval'(id,a,b)) = "letval("^id^","^show(a)^","^show(b)^")"
+  | show(get') = "get" 
   | show(recall') = "recall"
   | show(integer'(i)) = "integer("^Int.toString(i)^")"
   | show(store'(a)) = "store("^show(a)^")"

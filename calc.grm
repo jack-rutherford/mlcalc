@@ -21,6 +21,12 @@ open calcAS;
     | Recall
     | Int of int
     | Get
+    | ID of string
+    | Let 
+    | Val
+    | In
+    | End
+    | Equals
 
 
 %nonterm Prog of AST
@@ -52,6 +58,9 @@ Factor : Int                              (integer'(Int))
        | LParen Expr RParen               (Expr)
        | Recall                           (recall')
        | Get                              (get')
+       | ID                               (valref'(ID))
+       | Let Val ID Equals Expr In Expr End 
+                                          (letval'(ID,Expr1,Expr2))
 
 
 

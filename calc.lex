@@ -28,6 +28,7 @@ ws=[\ \t];
 "*"  => (Tokens.Times(!pos,!pos));
 "/"  => (Tokens.Div(!pos,!pos));
 "-"  => (Tokens.Minus(!pos,!pos));
+"="  => (Tokens.Equals(!pos,!pos));
 {digit}+  => (Tokens.Int(sval(explode yytext,0),!pos,!pos));
 {alpha}{alphanumeric}* =>
    (let val tok = String.implode (List.map (Char.toLower) 
@@ -36,6 +37,10 @@ ws=[\ \t];
       if      tok="s" then Tokens.Store(!pos,!pos)
       else if tok="r" then Tokens.Recall(!pos,!pos)
       else if tok="get" then Tokens.Get(!pos,!pos)
-      else (error ("error: bad token "^yytext); lex()) 
+      else if tok="let" then Tokens.Let(!pos,!pos)
+      else if tok="val" then Tokens.Val(!pos,!pos)
+      else if tok="in" then Tokens.In(!pos,!pos)
+      else if tok="end" then Tokens.End(!pos,!pos)
+      else Tokens.ID(yytext, !pos, !pos)
     end);
 .  => (error ("error: bad token "^yytext); lex());
