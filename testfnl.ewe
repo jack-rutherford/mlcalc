@@ -1,0 +1,85 @@
+SP:=100
+PR0 := 0
+PR1 := 0
+PR2 := 0
+PR3 := 0
+PR4 := 0
+PR5 := 0
+PR6 := 0
+PR7 := 0
+PR8 := 0
+PR9 := 0
+cr := 13
+nl := 10
+nullchar:=0
+zero:=0
+
+goto L0
+L1: M[SP+2]:=PR0 # start storing Physical Registers
+M[SP+3]:=PR1
+M[SP+4]:=PR2
+M[SP+5]:=PR3
+M[SP+6]:=PR4
+M[SP+7]:=PR5
+M[SP+8]:=PR6
+M[SP+9]:=PR7
+M[SP+10]:=PR8
+M[SP+11]:=PR9
+R0:=SP
+R0:=M[R0+11] # we bound the parameter x to offset 11
+R1:=5
+R0:=R0+R1
+PR9:=R0 # return result goes in PR9
+PR0:=M[SP+2] # restore the other PRs
+PR1:=M[SP+3]
+PR2:=M[SP+4]
+PR3:=M[SP+5]
+PR4:=M[SP+6]
+PR5:=M[SP+7]
+PR6:=M[SP+8]
+PR7:=M[SP+9]
+PR8:=M[SP+10]
+SP:=M[SP+1] # pop the activation record by following the control link
+PC:=PR8 # return to wherever you are supposed to go after the function is done
+L0:
+R2:=7
+PR8:=SP # part 1 for the access link
+M[SP+0]:=PR8 # part 2 access link (eventually maybe don't hardcode this offset for recursive functions)
+M[SP+1]:=SP # control link
+PR9:=R2 # store argument
+PR8:=0 # move the stack pointer part 1
+SP:=SP+PR8 # move the stack pointer part 2
+PR8:=PC+1 # return address
+goto L1 # call the function
+R2:=PR9 # retrieve the result of the function
+writeInt(R2)
+halt
+
+###### input function ######
+input:  readInt(PR9)		# read an integer into function result register
+SP:=M[SP+1]		# restore the stack pointer
+PC:=PR8			# return from whence you came
+###### output function ######
+output:  writeInt(PR9)		# write the integer in function parameter register
+writeStr(cr)
+SP:=M[SP+1]		# restore the stack pointer
+PC:=PR8			# return from whence you came
+equ PR0 M[0]
+equ PR1 M[1]
+equ PR2 M[2]
+equ PR3 M[3]
+equ PR4 M[4]
+equ PR5 M[5]
+equ PR6 M[6]
+equ PR7 M[7]
+equ PR8 M[8]
+equ PR9 M[9]
+equ MEM M[12]
+equ SP M[13]
+equ cr M[14]
+equ nl M[15]
+equ nullchar M[16]
+equ zero M[17]
+equ R0 M[0]
+equ R1 M[1]
+equ R2 M[0]
