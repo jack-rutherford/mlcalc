@@ -33,8 +33,8 @@ ws=[\ \t];
 "<="  => (Tokens.RelOp("<=",!pos,!pos));
 ">="  => (Tokens.RelOp(">=",!pos,!pos));
 "<>"  => (Tokens.RelOp("<>",!pos,!pos));
+"="  => (Tokens.Equals(!pos,!pos)); 
 "="  => (Tokens.RelOp("=",!pos,!pos));
-"="  => (Tokens.Equals(!pos,!pos)); (* FIX LATER, RelOp = and Equals =  interfere. Precendence is messed up*)
 {digit}+  => (Tokens.Int(sval(explode yytext,0),!pos,!pos));
 {alpha}{alphanumeric}* =>
    (let val tok = String.implode (List.map (Char.toLower) 

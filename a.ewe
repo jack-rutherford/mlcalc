@@ -13,13 +13,14 @@ cr := 13
 nl := 10
 nullchar:=0
 R0:=5
-M[SP+0]:=R0
-R1:=M[SP+0]
-R2:=6
-M[SP+1]:=R2
-R3:=M[SP+1]
-R1:=R1+R3
-writeInt(R1)
+R1:=4
+if R0 <> R1 then goto L0
+R2:=10
+goto L1
+L0:
+R3:=20
+L1:
+writeInt(R3)
 halt
 
 ###### input function ######
@@ -47,6 +48,6 @@ equ cr M[14]
 equ nl M[15]
 equ nullchar M[16]
 equ R0 M[0]
-equ R1 M[0]
-equ R2 M[1]
-equ R3 M[1]
+equ R1 M[1]
+equ R2 M[0]
+equ R3 M[0]
