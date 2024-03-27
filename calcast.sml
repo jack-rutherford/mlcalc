@@ -12,9 +12,11 @@ datatype
         | recall'
         | get'
         | letval' of string * AST * AST
-        | valref' of string;
+        | valref' of string
+        | ifthen' of AST * string * AST * AST * AST;
 	   
-fun show(valref'(id)) = "valref("^id^")"
+fun show(ifthen'(a, relop, b, c, d)) = "ifthen("^show(a)^","^relop^","^show(b)^","^show(c)^","^show(d)^")"
+  | show(valref'(id)) = "valref("^id^")"
   | show(letval'(id,a,b)) = "letval("^id^","^show(a)^","^show(b)^")"
   | show(get') = "get" 
   | show(recall') = "recall"

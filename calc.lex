@@ -28,7 +28,13 @@ ws=[\ \t];
 "*"  => (Tokens.Times(!pos,!pos));
 "/"  => (Tokens.Div(!pos,!pos));
 "-"  => (Tokens.Minus(!pos,!pos));
-"="  => (Tokens.Equals(!pos,!pos));
+"<"  => (Tokens.RelOp("<",!pos,!pos));
+">"  => (Tokens.RelOp(">",!pos,!pos));
+"<="  => (Tokens.RelOp("<=",!pos,!pos));
+">="  => (Tokens.RelOp(">=",!pos,!pos));
+"<>"  => (Tokens.RelOp("<>",!pos,!pos));
+"="  => (Tokens.RelOp("=",!pos,!pos));
+"="  => (Tokens.Equals(!pos,!pos)); (* FIX LATER, RelOp = and Equals =  interfere. Precendence is messed up*)
 {digit}+  => (Tokens.Int(sval(explode yytext,0),!pos,!pos));
 {alpha}{alphanumeric}* =>
    (let val tok = String.implode (List.map (Char.toLower) 
@@ -41,6 +47,9 @@ ws=[\ \t];
       else if tok="val" then Tokens.Val(!pos,!pos)
       else if tok="in" then Tokens.In(!pos,!pos)
       else if tok="end" then Tokens.End(!pos,!pos)
+      else if tok="if" then Tokens.If(!pos,!pos)
+      else if tok="then" then Tokens.Then(!pos,!pos)
+      else if tok="else" then Tokens.Else(!pos,!pos)
       else Tokens.ID(yytext, !pos, !pos)
     end);
 .  => (error ("error: bad token "^yytext); lex());

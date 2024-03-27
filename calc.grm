@@ -27,6 +27,10 @@ open calcAS;
     | In
     | End
     | Equals
+    | RelOp of string
+    | If
+    | Then
+    | Else
 
 
 %nonterm Prog of AST
@@ -61,6 +65,8 @@ Factor : Int                              (integer'(Int))
        | ID                               (valref'(ID))
        | Let Val ID Equals Expr In Expr End 
                                           (letval'(ID,Expr1,Expr2))
+       | If Expr RelOp Expr Then Expr Else Expr
+                                          (ifthen'(Expr1, RelOp, Expr2, Expr3, Expr4))
 
 
 

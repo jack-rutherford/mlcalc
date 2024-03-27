@@ -193,6 +193,25 @@ open calcAS;
             TextIO.output(outFile, r^":=M[SP+"^curOffset^"]\n");
             pushReg(r)
           end
+
+        | codegen(ifthen'(expr1,relOp,expr2,expr3,expr4), outFile, bindings, offset, depth) = 
+          let val opRelOp = opposite (relOp)
+              val _ = codegen(expr1, outFile, bindings, offset, depth)
+              val _ = codegen(expr2, outFile, bindings, offset, depth)
+              val r2 = popReg()
+              val r1 = popReg()
+              val elseBlock = nextLabel()
+              val thenBlock = nextLabel()
+          in
+            TextIO.output(outFile, "if "^r1^" "^opRelOp^" "^r2^" then goto "^elseBlock^"\n");
+            delReg(r2);
+            delReg(r1);
+            codegen(expr3, outFile, bindings, offset, depth);
+            delReg(popReg());
+            TextIO.output(outFile, "goto "^thenBlock^"\n"^elseBlock^":\n");
+            codegen(expr4, outFile, bindings, offset, depth);
+            TextIO.output(outFile,thenBlock^":\n")
+          end
           
         (* | codegen(_,outFile,bindings,offset,depth) =
                 (TextIO.output(TextIO.stdOut, "Attempt to compile expression not currently supported!\n");
