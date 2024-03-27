@@ -50,6 +50,7 @@ ws=[\ \t];
       else if tok="if" then Tokens.If(!pos,!pos)
       else if tok="then" then Tokens.Then(!pos,!pos)
       else if tok="else" then Tokens.Else(!pos,!pos)
+      else if tok="fun" then Tokens.Fun(!pos,!pos)
       else Tokens.ID(yytext, !pos, !pos)
     end);
 .  => (error ("error: bad token "^yytext); lex());

@@ -212,10 +212,17 @@ open calcAS;
             codegen(expr4, outFile, bindings, offset, depth);
             TextIO.output(outFile,thenBlock^":\n")
           end
+
+        | codegen(funref'(id1, id2), outfile, bindings, offset, depth) = 
+          let
+              
+          in
+
+          end
           
-        (* | codegen(_,outFile,bindings,offset,depth) =
+        | codegen(_,outFile,bindings,offset,depth) =
                 (TextIO.output(TextIO.stdOut, "Attempt to compile expression not currently supported!\n");
-                  raise Unimplemented)  *)
+                  raise Unimplemented) 
                 
                                     
      fun compile filename  =

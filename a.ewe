@@ -13,7 +13,7 @@ cr := 13
 nl := 10
 nullchar:=0
 R0:=5
-R1:=4
+R1:=5
 if R0 <> R1 then goto L0
 R2:=10
 goto L1

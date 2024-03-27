@@ -13,9 +13,13 @@ datatype
         | get'
         | letval' of string * AST * AST
         | valref' of string
-        | ifthen' of AST * string * AST * AST * AST;
+        | ifthen' of AST * string * AST * AST * AST
+        | funref' of string * string
+        | letfun' of string * string * AST * AST;
 	   
-fun show(ifthen'(a, relop, b, c, d)) = "ifthen("^show(a)^","^relop^","^show(b)^","^show(c)^","^show(d)^")"
+fun show(letfun'(id1, id2, a, b)) = "letfun("^id1^","^id2^","^show(a)^","^show(b)^")"
+  | show(funref'(id1, id2)) = "funref("^id1^","^id2^")"
+  | show(ifthen'(a, relop, b, c, d)) = "ifthen("^show(a)^","^relop^","^show(b)^","^show(c)^","^show(d)^")"
   | show(valref'(id)) = "valref("^id^")"
   | show(letval'(id,a,b)) = "letval("^id^","^show(a)^","^show(b)^")"
   | show(get') = "get" 

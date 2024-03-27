@@ -31,6 +31,7 @@ open calcAS;
     | If
     | Then
     | Else
+    | Fun
 
 
 %nonterm Prog of AST
@@ -69,7 +70,11 @@ Factor : Int                              (integer'(Int))
                                           (ifthen'(Expr1, "=", Expr2, Expr3, Expr4))
        | If Expr RelOp Expr Then Expr Else Expr
                                           (ifthen'(Expr1, RelOp, Expr2, Expr3, Expr4))
-     
+       | ID LParen ID RParen              
+                                          (funref'(ID1, ID2))
+       | Let Fun ID LParen ID RParen Equals Expr In Expr End
+                                          (letfun'(ID1, ID2, Expr1, Expr2))
+
 
 
 
