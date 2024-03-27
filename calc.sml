@@ -213,23 +213,65 @@ open calcAS;
             TextIO.output(outFile,thenBlock^":\n")
           end
 
-        | codegen(funref'(id1, id2), outfile, bindings, offset, depth) = 
-          let
-              (*  *)
+        | codegen(letfun'(id1, id2, e1, e2), outFile, bindings, offset, depth) = 
+          let val lab0 = nextLabel()
+              val lab1 = nextLabel()
+              val nb = (function'(id1), lab1, depth)::(constant'(id2), "11", depth+1)::bindings
           in
-
+            TextIO.output(outFile, "goto "^lab0^"\n");
+            TextIO.output(outFile, lab1^": M[SP+2]:=PR0\n");
+            TextIO.output(outFile, "M[SP+3]:=PR1\n");
+            TextIO.output(outFile, "M[SP+4]:=PR2\n");
+            TextIO.output(outFile, "M[SP+5]:=PR3\n");
+            TextIO.output(outFile, "M[SP+6]:=PR4\n");
+            TextIO.output(outFile, "M[SP+7]:=PR5\n");
+            TextIO.output(outFile, "M[SP+8]:=PR6\n");
+            TextIO.output(outFile, "M[SP+9]:=PR7\n");
+            TextIO.output(outFile, "M[SP+10]:=PR8\n");
+            TextIO.output(outFile, "M[SP+11]:=PR9\n");
+            let val _ = codegen(e1, outFile, nb, offset, depth+1)
+                val reg1 = popReg()
+            in
+              TextIO.output(outFile, "PR9:="^reg1^"\n");
+              delReg(reg1);
+              TextIO.output(outFile, "PR0:=M[SP+2]\n");
+              TextIO.output(outFile, "PR1:=M[SP+3]\n");
+              TextIO.output(outFile, "PR2:=M[SP+4]\n");
+              TextIO.output(outFile, "PR3:=M[SP+5]\n");
+              TextIO.output(outFile, "PR4:=M[SP+6]\n");
+              TextIO.output(outFile, "PR5:=M[SP+7]\n");
+              TextIO.output(outFile, "PR6:=M[SP+8]\n");
+              TextIO.output(outFile, "PR7:=M[SP+9]\n");
+              TextIO.output(outFile, "PR8:=M[SP+10]\n");
+              TextIO.output(outFile, "SP:=M[SP+1]\n");
+              TextIO.output(outFile, "PC:=PR8\n");
+              TextIO.output(outFile, lab0^":\n");
+              codegen(e2, outFile, nb, offset, depth)
+            end
           end
 
-        | codegen(letfun'(id1, id2, expr1, expr2), outfile, bindings, offset, depth) = 
-          let
-              
+        | codegen(funref'(id, expr), outFile, bindings, offset, depth) = 
+          let val _ = codegen(expr, outFile, bindings, offset, depth)
+              val r = popReg()
+              fun print s = TextIO.output(outFile, s)
           in
+            TextIO.output(outFile, "PR8:=SP\n");
+            forloop(depth-depthOf(function'(id), bindings), print, "PR8:=M[PR8+0]\n");
+            TextIO.output(outFile, "M[SP+"^Int.toString(1+depth*11)^"]:=PR8\n");
             
+            TextIO.output(outFile, "M[SP+"^Int.toString(2+depth*11)^"]:=SP\n");
+            TextIO.output(outFile, "PR9:="^r^"\n");
+            TextIO.output(outFile, "PR8:="^Int.toString(1+depth*11)^"\n");
+            TextIO.output(outFile, "SP:=SP+PR8\n");
+            TextIO.output(outFile, "PR8:=PC+1\n");
+            TextIO.output(outFile, "goto "^boundTo(function'(id), bindings)^"\n");
+            TextIO.output(outFile, r^":=PR9\n");
+            pushReg(r)
           end
-          
-        | codegen(_,outFile,bindings,offset,depth) =
+
+        (* | codegen(_,outFile,bindings,offset,depth) =
                 (TextIO.output(TextIO.stdOut, "Attempt to compile expression not currently supported!\n");
-                  raise Unimplemented) 
+                  raise Unimplemented)  *)
                 
                                     
      fun compile filename  =
