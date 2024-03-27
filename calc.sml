@@ -215,9 +215,16 @@ open calcAS;
 
         | codegen(funref'(id1, id2), outfile, bindings, offset, depth) = 
           let
-              
+              (*  *)
           in
 
+          end
+
+        | codegen(letfun'(id1, id2, expr1, expr2), outfile, bindings, offset, depth) = 
+          let
+              
+          in
+            
           end
           
         | codegen(_,outFile,bindings,offset,depth) =
